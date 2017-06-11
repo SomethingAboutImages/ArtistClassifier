@@ -1,4 +1,3 @@
-from __future__ import print_function
 import keras
 import numpy
 from keras.datasets import mnist
@@ -9,7 +8,7 @@ from keras import backend as K
 
 batch_size = 128
 num_classes = 10
-epochs = 100
+epochs = 1
 
 img_rows, img_columns = 28, 28
 
@@ -32,6 +31,8 @@ x_test /= 255
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
+tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
+
 model = Sequential()
 
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
@@ -42,10 +43,17 @@ model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
+
+# tbCallBack.set_model(model)
+
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(), metrics=['accuracy'])
 
-model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(x_test, y_test))
+model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(x_test, y_test),
+          callbacks=[tbCallBack])
+
+# plot_model(model, 'model.png')
+
 score = model.evaluate(x_test, y_test)
 
 print("Test loss: ", score[0])
