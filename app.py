@@ -7,13 +7,12 @@ import numpy as np
 import keras.models
 import re, os, sys
 import better_exceptions
+from load import *
 
 sys.path.append(os.path.abspath('./model'))
-from load import *
 
 app = Flask(__name__)
 
-global model, graph
 model, graph = init()
 
 
@@ -34,7 +33,7 @@ def index():
 def predict():
     imgData = request.get_data()
     convertImage(imgData)
-    print("debug")
+
     x = imread('output.png', mode='L')
     x = np.invert(x)
     x = imresize(x, (28, 28))
@@ -42,14 +41,11 @@ def predict():
     # plt.show()
     # imshow(x)
     x = x.reshape(1, 28, 28, 1)
-    print("debug2")
 
     with graph.as_default():
         out = model.predict(x)
         print(out)
         print(np.argmax(out, axis=1))
-        print("debug3")
-
         response = np.array_str(np.argmax(out, axis=1))
         return response
 
