@@ -1,8 +1,6 @@
 MNIST dataset trained with Keras (tensorflow backend). Also included simple frontend
 
-![](http://i.imgur.com/N1gV28J.png)
-
-![](http://i.imgur.com/w5FL0PN.png)
+![](https://image.ibb.co/exumCF/Digit_recognition.gif)
 
 --------
 
