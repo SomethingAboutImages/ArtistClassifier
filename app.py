@@ -47,6 +47,8 @@ def predict():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(time.time()) + '-' + filename))
+    else:
+        return sendError('Invalid filetype')
 
     x = imread('output.png', mode='L')
     x = np.invert(x)
