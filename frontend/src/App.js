@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+    Navbar,
+    NavbarBrand,
+    Container,
+} from 'reactstrap';
+
+import { Upload } from './components/Upload';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                <Navbar color="light" light expand="md">
+                    <NavbarBrand href="/">Something About Images</NavbarBrand>
+                </Navbar>
+                <Container>
+                    <Upload />
+                </Container>
+            </div>
+        );
+    }
 }
 
 export default App;

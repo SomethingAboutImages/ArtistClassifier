@@ -1,7 +1,34 @@
-MNIST dataset trained with Keras (tensorflow backend). Also included simple frontend
+## Web Image Classifier
 
-![](https://image.ibb.co/exumCF/Digit_recognition.gif)
+This project was created by the Something About Images group for the Fall 2018 CSC 480 Artificial Intelligence class at Cal Poly SLO.
 
---------
+__Note: This is a very basic version right now__
 
-<a href="https://adexin.com/contact-us/">Contact us</a> if you have any questions. Use our <a href="https://adexin.com/">Custom software development services</a>.
+### Backend:
+
+```
+Need packages like keras, tensorflow, etc. Look in app.py
+
+python2 app.py
+
+This will start the Flask server and download the ResNet50 model if it does not exist.
+```
+
+### Frontend:
+
+Install dependencies:
+```
+cd frontend && yarn
+```
+
+#### For development: 
+```
+yarn start
+```
+This will open up the Create React App project for auto reloading. Classifying will not work, need to run `yarn build` (CORS stuff I don't care about now)
+
+#### For production: 
+```
+yarn build
+```
+Flask server will serve static files from frontend/build/

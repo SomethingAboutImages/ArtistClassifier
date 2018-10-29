@@ -53,7 +53,7 @@ def predict():
 
     with graph.as_default():
         preds = resnetModel.predict(x)
-        output = [{str(t[1]): float(t[2])} for t in decode_predictions(preds, top=5)[0]]
+        output = [{'label': str(t[1]), 'value': float(t[2])} for t in decode_predictions(preds, top=5)[0]]
         print(output)
         return jsonify({'status': 'SUCCESS', 'response': output})
 
