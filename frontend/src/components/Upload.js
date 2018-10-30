@@ -14,6 +14,7 @@ export class Upload extends Component {
         this.state = {
             files: [],
             results: [],
+            imgData: '',
             loading: false
         };
     }
@@ -27,6 +28,12 @@ export class Upload extends Component {
         const data = new FormData();
         data.append('file', files[0]);
         data.append('filename', files[0].name);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.addEventListener('load', () => {
+            this.setState({ imgData: reader.result });
+        });
 
         fetch(BASE_URL + '/predict/', {
             method: 'POST',
@@ -94,6 +101,10 @@ export class Upload extends Component {
                             {results}
                         </tbody>
                     </table>
+                    <img className={'img-fluid ' + (this.state.imgData ? '' : 'hidden')}
+                        src={this.state.imgData}
+                        alt="Preview"
+                    />
                 </div>
             </section>
         )
