@@ -1,8 +1,6 @@
 from flask import Flask, send_from_directory, request, jsonify
 from werkzeug.utils import secure_filename
-import matplotlib.pyplot as plt
 import base64
-import codecs
 from scipy.misc import imsave, imread, imresize
 import time
 import numpy as np

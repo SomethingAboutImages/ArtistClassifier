@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
+import { Progress } from 'reactstrap';
 import _ from 'lodash';
 import './Upload.css';
 
@@ -12,13 +13,15 @@ export class Upload extends Component {
 
         this.state = {
             files: [],
-            results: []
+            results: [],
+            loading: false
         };
     }
 
     onDrop(files) {
         this.setState({
-            files
+            files,
+            loading: true
         });
 
         const data = new FormData();
@@ -31,13 +34,20 @@ export class Upload extends Component {
         })
         .then(res => res.json())
         .then(body => {
-            this.setState({ results: body.response });
+            this.setState({
+                results: body.response,
+                loading: false
+            });
         })
+        .catch(err => {
+            this.setState({ loading: false });
+        });
     }
 
     onCancel() {
         this.setState({
-            files: []
+            files: [],
+            loading: false
         });
     }
 
@@ -67,10 +77,12 @@ export class Upload extends Component {
                         <h1>Drop image file to classify</h1>
                         <h3>Or, click to select a file</h3>
                     </Dropzone>
+                    <h2 className={this.state.loading ? '' : 'hidden'}></h2>
+                    <Progress className={this.state.loading ? '' : 'hidden'} animated value={100} />
                 </div>
                 <div className='results'>
                     <h2>Top 5 Confidence Results:</h2>
-                    <table class="table table-hover">
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
