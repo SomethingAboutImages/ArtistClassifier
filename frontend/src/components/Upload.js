@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
-import { Progress } from 'reactstrap';
+import { Progress, Form, FormGroup, Label, Input, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 import './Upload.css';
 
@@ -12,6 +12,7 @@ export class Upload extends Component {
         super(props);
 
         this.state = {
+            model: 'resnet50',
             files: [],
             results: [],
             imgData: '',
@@ -35,16 +36,23 @@ export class Upload extends Component {
             this.setState({ imgData: reader.result });
         });
 
-        fetch(BASE_URL + '/predict/', {
+        fetch(BASE_URL + `/predict/${this.state.model}`, {
             method: 'POST',
             body: data
         })
         .then(res => res.json())
         .then(body => {
-            this.setState({
-                results: body.response,
-                loading: false
-            });
+            this.setState({ loading: false });
+            if (body.status === 'SUCCESS') {
+                this.setState({
+                    results: body.response,
+                    error: ''
+                });
+            } else {
+                this.setState({
+                    error: body.message
+                });
+            }
         })
         .catch(err => {
             this.setState({ loading: false });
@@ -73,6 +81,22 @@ export class Upload extends Component {
 
         return (
             <section>
+                <Form className="model-form">
+                    <Col sm={{size: 6, offset: 3}}>
+                        <FormGroup>
+                            <Label for="model-select">Select Model:</Label>
+                            <Input
+                                type="select"
+                                name="select"
+                                id="model-select"
+                                onChange={e => this.setState({model: e.target.value})}
+                            >
+                                <option value="resnet50">ResNet50</option>
+                                <option value="picasso">Picasso - Not Picasso</option>
+                            </Input>
+                        </FormGroup>
+                    </Col>
+                </Form>
                 <div>
                     <Dropzone
                         accept="image/jpeg, image/png"
@@ -86,6 +110,9 @@ export class Upload extends Component {
                     </Dropzone>
                     <h2 className={this.state.loading ? '' : 'hidden'}></h2>
                     <Progress className={this.state.loading ? '' : 'hidden'} animated value={100} />
+                </div>
+                <div className={'errors ' + (this.state.error ? '' : 'hidden')}>
+                    <Alert color="danger">{this.state.error}</Alert>
                 </div>
                 <div className='results'>
                     <h2>Top 5 Confidence Results:</h2>
