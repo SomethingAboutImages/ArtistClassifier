@@ -15,11 +15,14 @@ app = Flask(__name__, static_folder='frontend/build')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-model, graph = init()
-resnetModel = initResNet50()
+
+# Initialize all the models
+models, sizes, graph = init()
 
 def sendError(message):
-    return jsonify({'status': 'ERROR', 'message': message})
+    res = jsonify({'status': 'ERROR', 'message': message})
+    res.status_code = 400
+    return res
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -31,8 +34,11 @@ def tempSaveImage(name, img_data):
         output.write(img_data)
     return filename
 
-@app.route('/predict/', methods=['POST'])
-def predict():
+@app.route('/predict/<modelName>', methods=['POST'])
+def predict(modelName):
+    # Check that model exists
+    if modelName not in models:
+        return sendError('Invalid model')
     # Check for file called 'file'
     if 'file' not in request.files:
         return sendError('No "file" part')
@@ -44,38 +50,16 @@ def predict():
 
     imgfile = tempSaveImage(file.filename, file.read())
 
-    img = image.load_img(imgfile, target_size=(224, 224))
+    img = image.load_img(imgfile, target_size=sizes[modelName])
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
 
     with graph.as_default():
-        preds = resnetModel.predict(x)
+        preds = models[modelName].predict(x)
         output = [{'label': str(t[1]), 'value': float(t[2])} for t in decode_predictions(preds, top=5)[0]]
         print(output)
         return jsonify({'status': 'SUCCESS', 'response': output})
-
-@app.route('/mnist/', methods=['POST'])
-def mnist():
-    # Check for file called 'file'
-    if 'file' not in request.files:
-        return sendError('No "file" part')
-    # Get file
-    file = request.files['file']
-    # Check for a filename
-    if file.filename == '' or not allowed_file(file.filename):
-        return sendError('Invalid file name')
-
-    imgfile = tempSaveImage(file.filename, file.read())
-
-    x = imread(imgfile, mode='L')
-    x = np.invert(x)
-    x = imresize(x, (28, 28))
-    x = x.reshape(1, 28, 28, 1)
-
-    with graph.as_default():
-        out = model.predict(x)
-        return jsonify({'status': 'SUCCESS', 'response': out.tolist()[0]})
 
 # React app static files
 @app.route('/', defaults={'path': ''})
