@@ -57,7 +57,11 @@ def predict(modelName):
 
     with graph.as_default():
         preds = models[modelName].predict(x)
-        output = [{'label': str(t[1]), 'value': float(t[2])} for t in decode_predictions(preds, top=5)[0]]
+        print(preds)
+        if modelName == 'picasso' or modelName == 'picasso_one':
+            output = [{'label': 'Picasso', 'value': float(preds[0][1])}, {'label': 'Not Picasso', 'value': float(preds[0][0])}]
+        else:
+            output = [{'label': str(t[1]), 'value': float(t[2])} for t in decode_predictions(preds, top=5)[0]]
         print(output)
         return jsonify({'status': 'SUCCESS', 'response': output})
 
@@ -75,5 +79,5 @@ if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
 
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5100))
     app.run(host='127.0.0.1', port=port)

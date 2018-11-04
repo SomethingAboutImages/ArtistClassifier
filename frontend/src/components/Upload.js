@@ -4,7 +4,7 @@ import { Progress, Form, FormGroup, Label, Input, Col, Alert } from 'reactstrap'
 import _ from 'lodash';
 import './Upload.css';
 
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'http://localhost:5100';
 
 export class Upload extends Component {
 
@@ -93,6 +93,7 @@ export class Upload extends Component {
                             >
                                 <option value="resnet50">ResNet50</option>
                                 <option value="picasso">Picasso - Not Picasso</option>
+                                <option value="picasso_one">One Epoch Picasso - Not Picasso</option>
                             </Input>
                         </FormGroup>
                     </Col>
