@@ -12,7 +12,7 @@ export class Upload extends Component {
         super(props);
 
         this.state = {
-            model: 'resnet50',
+            model: 'artists',
             files: [],
             results: [],
             imgData: '',
@@ -67,7 +67,12 @@ export class Upload extends Component {
     }
 
     prettyFormat(input) {
-        return _.capitalize(input.replace('_', ' '));
+        input = input.replace(/_/g, ' ');
+        let splitStr = input.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+        return splitStr.join(' '); 
     }
 
     render() {
@@ -91,6 +96,7 @@ export class Upload extends Component {
                                 id="model-select"
                                 onChange={e => this.setState({model: e.target.value})}
                             >
+                                <option value="artists">Artists</option>
                                 <option value="resnet50">ResNet50</option>
                                 <option value="picasso">Picasso - Not Picasso</option>
                                 <option value="picasso_one">One Epoch Picasso - Not Picasso</option>
