@@ -17,7 +17,7 @@ app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Initialize all the models
-models, sizes, graph = init()
+models, sizes, decode, graph = init()
 
 def sendError(message):
     res = jsonify({'status': 'ERROR', 'message': message})
@@ -57,11 +57,7 @@ def predict(modelName):
 
     with graph.as_default():
         preds = models[modelName].predict(x)
-        print(preds)
-        if modelName == 'picasso' or modelName == 'picasso_one':
-            output = [{'label': 'Picasso', 'value': float(preds[0][1])}, {'label': 'Not Picasso', 'value': float(preds[0][0])}]
-        else:
-            output = [{'label': str(t[1]), 'value': float(t[2])} for t in decode_predictions(preds, top=5)[0]]
+        output = decode[modelName](preds)
         print(output)
         return jsonify({'status': 'SUCCESS', 'response': output})
 
