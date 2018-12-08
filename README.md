@@ -2,6 +2,10 @@
 
 This project was created by the Something About Images group for the Fall 2018 CSC 480 Artificial Intelligence class at Cal Poly SLO.
 
+[Try the demo](https://dev.christianjohansen.com/artists/)
+
+[Kaggle notebook that trains the model](https://www.kaggle.com/awallst/somethingaboutimages-csc-480-cal-poly)
+
 __Note: This is a very basic version right now__
 
 ### Backend:
